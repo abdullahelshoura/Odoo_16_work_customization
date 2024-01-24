@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <template id="report_saudi_invoice_document">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.basic_layout">
+                    <div class="header" style="border-bottom:1px solid black;padding-bottom:30px;">
+                        <div class="row">
+                            <div class="col-6">
+                                <t t-esc="o.generate_qr_code()"/>
+                                <img t-att-src="image_data_uri(o.qr_code)" style="max-height: 150px;" alt="QR Code"/>
+                            </div>
+                            <div align="center" class="col-6">
+                                <div style="margin-bottom:30px;">
+                                    <h2 style="font-size:50px;weight:800;">فاتورة ضريبية</h2>
+                                </div>
+                                <div style="font-size:20px;float:right;padding-right:20px;" class="">
+                                    <span>الرقم التسلسلي</span>
+                                    <br/>
+                                    <span t-esc="o.name"/>
+                                </div>
+                                <div style="font-size:20px;float:left;padding-left:20px;" class="">
+                                    <span>التاريخ</span>
+                                    <br/>
+                                    <span t-esc="o.invoice_date"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="page">
+                        <style>
+                            td.td-info{
+                                padding:0px;
+                                padding-right:10px;
+                                padding-left:10px;
+                                border-right:1px solid black;
+                            }
+                            div.div-cont{
+                                padding-right:10px;
+                            }
+                            span.label-span{
+                            font-size:18px;
+                            }
+
+                            table.main-tab{
+                            margin-top:60px;
+                            }
+
+                            span.tab-head{
+                            font-size:18px;
+
+                            }
+                            td.th-info{
+                                border-right : 1px solid black;
+                                vertical-align: middle;
+                            }
+
+
+                        </style>
+                        <h3 align="right" style="padding-top:50px;margin-bottom: 15px;">معلومات البائع</h3>
+                        <table class="table table-borderless" style="text-align:right;border:none;">
+                            <tr class="tr-info">
+                                <td class="td-info">
+                                        <span class="label-span">رقم السجل التجاري</span>
+                                        <br/>
+                                        <span t-esc="o.invoice_user_id.company_id.company_registry"/>
+                                </td>
+                                <td class="td-info">
+                                        <span class="label-span">رقم تسجيل ضريبة القيمة المضافة للبائع</span>
+                                        <br/>
+                                        <span t-esc="o.invoice_user_id.company_id.vat"/>
+                                </td>
+                                <td class="td-info" style="width:28%;">
+                                        <span class="label-span" >عنوان البائع</span>
+                                        <br/>
+                                        <span t-esc="o.invoice_user_id.contact_address"/>
+                                </td>
+                                <td class="td-info">
+                                        <span class="label-span">اسم البائع</span>
+                                        <br/>
+                                        <span t-esc="o.invoice_user_id.name"/>
+                                </td>
+
+                            </tr>
+                        </table>
+
+
+                        <h3 align="right" style="margin-top:50px;margin-bottom: 15px;">معلومات المشتري</h3>
+                        <table class="table table-borderless" style="text-align:right;border:none;">
+                            <tr class="tr-info">
+                                <td class="td-info">
+                                        <span class="label-span">رقم تسجيل ضريبة القيمة المضافة للمشتري</span>
+                                        <br/>
+                                        <span t-esc="o.partner_id.company_id.vat"/>
+                                </td>
+                                <td class="td-info">
+                                        <span class="label-span">رقم السجل التجاري</span>
+                                        <br/>
+                                        <span t-esc="o.partner_id.company_id.company_registry"/>
+                                </td>
+
+                                <td class="td-info" style="width:20%;">
+                                        <span class="label-span" style="margin-bottom:10px;">عنوان المشتري</span>
+                                        <br/>
+                                        <span t-esc="o.partner_id.contact_address"/>
+                                </td>
+                                <td class="td-info">
+                                        <span class="label-span">اسم المشتري</span>
+                                        <br/>
+                                        <span t-esc="o.partner_id.name"/>
+                                </td>
+
+                            </tr>
+                        </table>
+
+
+                        <table class="text-center table table-borderless main-tab" >
+                            <thead style="border-bottom:1px dashed black;">
+                                <tr>
+                                    <td style="vertical-align:middle;" class="th-info text-center">
+                                        <span  class="tab-head">المجموع شامل <br/> ضريبة القيمة المضافة</span>
+                                    </td>
+                                    <td style="vertical-align:middle;" class="th-info text-center">
+                                        <span class="tab-head">قيمة <br/>الضريبة</span>
+                                    </td>
+                                    <td style="vertical-align:middle;" class="th-info text-center">
+                                        <span class="tab-head">نسبة <br/>الضريبة</span>
+                                    </td>
+                                    <td style="vertical-align:middle;" class="th-info text-center">
+                                        <span class="tab-head">المجوع الفرعي <br/>بدون ضريبة</span>
+                                    </td>
+                                    <td style="vertical-align:middle;" class="th-info text-center" >
+                                        <span class="tab-head">الكمية</span>
+                                    </td>
+                                    <td style="vertical-align:middle;" class="th-info text-center">
+                                        <span class="tab-head">سعر <br/>الوحده</span>
+                                    </td>
+                                    <td style="vertical-align:middle;width:10%;" class="th-info text-center">
+                                        <span class="tab-head">المنتج</span>
+                                    </td>
+                                </tr>
+                            </thead>
+                            <tbody style="border-bottom:1px dashed black;">
+                                <t t-set="total_tax_amount" t-value="0"/>
+                                <t t-foreach="o.invoice_line_ids" t-as="line">
+                                    <tr>
+                                        <td class="th-info text-center">
+                                            <t t-set="inline_vat" t-value="0"/>
+                                            <t t-foreach="line.tax_ids" t-as="tax_rec">
+                                                <t t-set="inline_vat"
+                                                   t-value="inline_vat+((tax_rec.amount*line.price_subtotal)/100)"/>
+                                                <t t-set="total_tax_amount" t-value="total_tax_amount+inline_vat"/>
+                                            </t>
+                                            <span t-esc="line.price_subtotal+inline_vat" t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
+                                        </td>
+                                        <td class="th-info text-center">
+
+                                            <t t-if="inline_vat != 0">
+                                                <span t-esc="inline_vat" t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
+
+
+                                            </t>
+                                        </td>
+                                        <td class="th-info text-center">
+                                            <t t-set="tax_len" t-value="0"/>
+                                            <t t-foreach="line.tax_ids" t-as="tax_rec">
+                                                <t t-set="tax_len" t-value="tax_len+1"/>
+                                            </t>
+                                            <t t-foreach="line.tax_ids" t-as="tax_rec">
+                                                <t t-if="tax_len == 1">
+                                                    <t t-esc="tax_rec.amount"/>%
+                                                </t>
+                                                <t t-if="tax_len &gt; 1">
+                                                    <t t-esc="tax_rec.amount"/>% <br/>
+                                                </t>
+                                            </t>
+
+                                        </td>
+                                        <td class="th-info text-center">
+                                            <span t-field="line.price_subtotal"/>
+                                        </td>
+                                        <td class="th-info text-center">
+                                            <span t-field="line.quantity"/>
+                                        </td>
+                                        <td class="th-info text-center">
+                                            <span t-field="line.price_unit"/>
+                                        </td>
+                                        <td class="th-info text-center">
+                                            <span t-field="line.product_id"/>
+                                        </td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+
+                        <div style="padding:10px;padding-left:50px;margin-top:50px;" name="total_without_taxxx" class="row">
+                            <div align="left" class="col-6">
+                                <span style="float:left;" t-field="o.amount_untaxed"/>
+                            </div>
+                            <div align="right" class="col-6">
+                                <span style="font-size:20px;float:right;">المجموع</span>
+                            </div>
+                        </div>
+                        <div style="padding:10px;padding-left:50px;margin-top:10px;" name="taxxx_amount" class="row">
+                            <div align="left" class="col-6">
+                                <span style="float:left;" t-esc="total_tax_amount"  t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
+                            </div>
+                            <div align="right" class="col-6">
+                                <span style="font-size:20px;float:right;">ضريبة القيمة المضافة</span>
+                            </div>
+                        </div>
+                        <div style="padding:10px;padding-left:50px;margin-top:10px;" name="total_with_taxxx" class="row">
+                            <div align="left" class="col-6">
+                                <span style="float:left;" t-field="o.amount_residual"/>
+                            </div>
+                            <div align="right" class="col-6">
+                                <span style="font-size:20px;float:right;"> المحموع مع ضريبة القيمة المضافة</span>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <record id="action_print_saudi_invoice_document" model="ir.actions.report">
+        <field name="name">Saudi Vat Invoice</field>
+        <field name="model">account.move</field>
+        <field name="binding_model_id" ref="account.model_account_move"/>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">saudi_vat_invoice.report_saudi_invoice_document</field>
+        <field name="report_file">saudi_vat_invoice.report_saudi_invoice_document</field>
+        <field name="binding_type">report</field>
+    </record>
+</odoo>
